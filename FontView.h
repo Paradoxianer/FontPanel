@@ -7,6 +7,22 @@
 #include <ListItem.h>
 #include <String.h>
 
+#define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
+
+class FontPreview : public BView
+{
+public:
+					FontPreview(const BRect frame);
+			
+	void			SetPreviewText(const char *text);
+	const char *	PreviewText(void) const;
+			
+	void			Draw(BRect r);
+	
+private:
+	BString	fPreviewText;
+};
+
 class FontView : public BListView
 {
 public:

@@ -31,8 +31,6 @@ enum
 	M_HIDE_WINDOW
 };
 
-
-#define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
 const float		kMarginTopBottom	= 2.0;
 const float		kMarginLeftRight	= 4.0;
 
