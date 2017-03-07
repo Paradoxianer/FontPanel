@@ -18,9 +18,6 @@
 
 
 
-
-
-
 FontPanel::FontPanel(BMessenger *target,BMessage *msg, float size, bool modal,
 					bool hide_when_done)
 {
