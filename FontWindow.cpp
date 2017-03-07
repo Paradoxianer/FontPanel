@@ -18,13 +18,13 @@
 
 FontWindow::FontWindow(const BRect frame, float fontsize)
  :	BWindow(frame,B_TRANSLATE("Choose a Font"), B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,0)
-{
-	
+{	
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
 	SetSizeLimits(400,2400,300,2400);
 	fReallyQuit = false;
 	fView = new FontView();
+	fPrevView = new FontPreview();
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
  	AddChild(BGroupLayoutBuilder(B_VERTICAL)
@@ -34,7 +34,7 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
  			.Add(new BCheckBox(B_TRANSLATE("Italic")),0,1)
  			.Add(new BCheckBox(B_TRANSLATE("Strike Out")),1,0)
  		)
-		.Add()
+		.Add(fPrevView)
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
 			.AddGlue()
 			.Add(new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL)))

@@ -9,20 +9,6 @@
 
 #define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
 
-class FontPreview : public BView
-{
-public:
-					FontPreview(const BRect frame);
-			
-	void			SetPreviewText(const char *text);
-	const char *	PreviewText(void) const;
-			
-	void			Draw(BRect r);
-	
-private:
-	BString	fPreviewText;
-};
-
 class FontView : public BListView
 {
 public:
@@ -46,13 +32,17 @@ public:
 	void		SetDividerPosition(float pos){fDivider = pos;}
 	float		DividerPosition(void){return fDivider;}
 	
+	BString*	PreviewString(void){return &fPrevString;};
+	void		SetPreviewString(char *prevString){fPrevString.SetTo(prevString);};
+	void		SetPreviewString(BString prevString){fPrevString.SetTo(prevString);};
+	
 private:	
 	void		RescanForFonts(void);
 	void		DeleteAll(void);
 	
 	float		fDivider;
 	BString		filterString;
-	BString		fDrawString;
+	BString		fPrevString;
 	
 
 	

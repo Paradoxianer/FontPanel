@@ -2,8 +2,10 @@
 #define FONT_WINDOW_H_
 
 #include <Window.h>
-#include "FontView.h"
 #include <PopUpMenu.h>
+
+#include "FontView.h"
+#include "FontPreview.h"
 
 class FontWindow : public BWindow
 {
@@ -19,6 +21,7 @@ public:
 
 private:
 	bool			fReallyQuit;
+	FontPreview		*fPrevView;
 	
 	/*BCheckBox		fBold;
 	BCheckBox		fItalic;
