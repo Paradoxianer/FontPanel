@@ -12,7 +12,7 @@ class FontPreview : public BView
 {
 public:
 					FontPreview();
-			
+	
 	void			SetPreviewText(const char *text);
 	const char *	PreviewText(void) const;
 			

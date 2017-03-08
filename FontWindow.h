@@ -7,6 +7,8 @@
 #include "FontView.h"
 #include "FontPreview.h"
 
+
+
 class FontWindow : public BWindow
 {
 public:

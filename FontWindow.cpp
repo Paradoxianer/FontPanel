@@ -24,6 +24,8 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
 	SetSizeLimits(400,2400,300,2400);
 	fReallyQuit = false;
 	fView = new FontView();
+	fView->SetSelectionMessage(new BMessage(M_FONT_SELECTED));
+	fView->SetTarget(this);
 	fPrevView = new FontPreview();
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
@@ -64,8 +66,29 @@ void
 FontWindow::MessageReceived(BMessage *msg)
 {
 	msg->PrintToStream();
-	if (msg->what == M_HIDE_WINDOW)
-		Hide();
-	else
-		BWindow::MessageReceived(msg);
+		switch (msg->what) {
+		case M_HIDE_WINDOW: {
+			Hide();
+			break;
+		}
+		case M_FONT_SELECTED: {
+			int32 sel = fView->CurrentSelection();
+			if (sel > 0) {
+				FontItem *fItem = dynamic_cast<FontItem*>(fView->ItemAt(sel));
+				if (fItem !=NULL)
+				{
+					BFont font;
+					fPrevView->GetFont(&font);
+					uint16 face=font.Face();
+					font.SetFamilyAndFace(fItem->GetFamily(),face);
+					fPrevView->SetFont(&font);
+					fPrevView->Draw(Bounds());
+				}
+			}
+		}
+		default: {
+			BWindow::MessageReceived(msg);
+			break;
+		}
+	}
 }
