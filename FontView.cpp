@@ -1,11 +1,11 @@
 
-#include "FontView.h"
+#include "FontListView.h"
 #include "FontPanel.h"
 #include <string.h>
 
 
 
-FontView::FontView(void)
+FontListView::FontListView(void)
  : BListView("font_view"),
    fDivider(140.0),
    filterString("")
@@ -16,39 +16,39 @@ FontView::FontView(void)
 }
 
 
-FontView::~FontView(void)
+FontListView::~FontListView(void)
 {
 
 }
 
 
 void
-FontView::AttachedToWindow(void)
+FontListView::AttachedToWindow(void)
 {
 	RescanForFonts();
 }
 
 
 void
-FontView::SetFontSize(uint16 size)
+FontListView::SetFontSize(uint16 size)
 {
 }
 
 
 void
-FontView::SelectFont(font_family family, font_style style, float size)
+FontListView::SelectFont(font_family family, font_style style, float size)
 {
 }
 
 
 void
-FontView::SelectFont(const BFont &font)
+FontListView::SelectFont(const BFont &font)
 {
 }
 
 
 void
-FontView::MessageReceived(BMessage *msg)
+FontListView::MessageReceived(BMessage *msg)
 {
 	switch (msg->what) {
 /*		case '': {
@@ -62,7 +62,7 @@ FontView::MessageReceived(BMessage *msg)
 }
 
 void
-FontView::RescanForFonts(void)
+FontListView::RescanForFonts(void)
 {	
 	DeleteAll();
 	int32 numFamilies = count_font_families();
@@ -77,7 +77,7 @@ FontView::RescanForFonts(void)
 	}
 }
 
-void FontView::SetFilter(char *newFilter)
+void FontListView::SetFilter(char *newFilter)
 {
 	filterString=newFilter;
 	int32		count	= CountItems();
@@ -85,7 +85,7 @@ void FontView::SetFilter(char *newFilter)
 }
 
 void
-FontView::DeleteAll(void)
+FontListView::DeleteAll(void)
 {	
 	MakeEmpty();
 }
@@ -99,7 +99,7 @@ FontItem::FontItem(font_family myFamily): BListItem()
 
 void  FontItem::DrawItem(BView *owner, BRect frame, bool complete)
 {
-	FontView *fView = static_cast<FontView *>(owner);
+	FontListView *fView = static_cast<FontListView *>(owner);
 	font_height			m_fontHeight;
 	rgb_color			color;
 	fView->SetDrawingMode(B_OP_OVER);
@@ -139,7 +139,7 @@ void
 FontItem::Update( BView *owner, const BFont *fFont)
 {
 	BListItem::Update(owner, fFont);
-	FontView *fView = static_cast<FontView *>(owner);
+	FontListView *fView = static_cast<FontListView *>(owner);
 	if ((fFont->StringWidth(family)+2*kMarginLeftRight)>fView->DividerPosition())
 		fView->SetDividerPosition(fFont->StringWidth(family)+2*kMarginLeftRight);
 	SetWidth(font.StringWidth(PREVIEW_STR) + fView->DividerPosition()+(2*kMarginLeftRight));

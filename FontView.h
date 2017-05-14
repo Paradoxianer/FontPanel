@@ -9,7 +9,7 @@
 
 #define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
 
-class FontView : public BListView
+class FontListView : public BListView
 {
 public:
 				FontView(void);
