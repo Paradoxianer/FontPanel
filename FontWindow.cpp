@@ -1,5 +1,6 @@
 #include <ScrollView.h>
 #include <ScrollBar.h>
+#include <StringView.h>
 #include <CheckBox.h>
 #include <Spinner.h>
 #include <DecimalSpinner.h>
@@ -30,7 +31,7 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
  	AddChild(BGroupLayoutBuilder(B_VERTICAL)
- 		.Add(fView)
+ 		.Add(new BScrollView("fontScroller",fView, 0,false, true))
  		.Add(BGridLayoutBuilder()
  			.Add(new BCheckBox(B_TRANSLATE("Bold")),0,0)
  			.Add(new BCheckBox(B_TRANSLATE("Italic")),0,1)
@@ -40,7 +41,7 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
 			.AddGlue()
 			.Add(new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL)))
-			.Add(new BButton("ok",B_TRANSLATE("OK"),new BMessage(M_OK)))		
+			.Add(new BButton("ok",B_TRANSLATE("OK"),new BMessage(M_OK)))
 		)
  	);
 }
@@ -92,3 +93,41 @@ FontWindow::MessageReceived(BMessage *msg)
 		}
 	}
 }
+
+/*Update StyleList
+			const int32 styles = count_font_styles(fontFamilyName);
+
+			BMessage* familyMsg = new BMessage(FONTFAMILY_CHANGED_MSG);
+			familyMsg->AddString("_family", fontFamilyName);
+			BMenuItem* familyItem = new BMenuItem(stylemenu, familyMsg);
+			fFontFamilyMenu->AddItem(familyItem);
+
+			for (int32 j = 0; j < styles; j++) {
+				if (get_font_style(fontFamilyName, j, &fontStyleName) == B_OK) {
+					BMessage* fontMsg = new BMessage(FONTSTYLE_CHANGED_MSG);
+					fontMsg->AddString("_family", fontFamilyName);
+					fontMsg->AddString("_style", fontStyleName);
+
+					BMenuItem* styleItem = new BMenuItem(fontStyleName, fontMsg);
+					styleItem->SetMarked(false);
+
+					// setInitialfont is used when we attach the FontField
+					if (!strcmp(fontStyleName, currentStyle)
+						&& !strcmp(fontFamilyName, currentFamily)
+						&& setInitialfont) {
+						styleItem->SetMarked(true);
+						familyItem->SetMarked(true);
+
+						BString string;
+						string << currentFamily << " " << currentStyle;
+
+						if (fFontMenuField)
+							fFontMenuField->MenuItem()->SetLabel(string.String());
+					}
+					stylemenu->AddItem(styleItem);
+				}
+			}
+
+			stylemenu->SetRadioMode(true);
+			stylemenu->SetTargetForItems(this);
+*/
