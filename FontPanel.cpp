@@ -5,10 +5,11 @@
 */
 
 #include "FontPanel.h"
-#include "Spinner.h"
+
 #include "FontView.h"
 #include "FontWindow.h"
 
+#include <Spinner.h>
 #include <Application.h>
 #include <Invoker.h>
 #include <String.h>
