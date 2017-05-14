@@ -44,5 +44,11 @@ FontPreview::Draw(BRect r)
 		drawpt.y = (Bounds().IntegerHeight() + fheight.ascent) / 2;
 	else
 		drawpt.y = Bounds().bottom - 10;
+	SetDrawingMode(B_OP_COPY);
+	BRect rect = Bounds();
+	rgb_color hColor = HighColor();
+	SetHighColor(ViewColor());
+	FillRect(rect);
+	SetHighColor(hColor);
 	DrawString(fPreviewText.String(), drawpt);
 }
