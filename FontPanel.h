@@ -1,20 +1,28 @@
-#ifndef FONTPANEL_H_
-#define FONTPANEL_H_
+/*
+ * Copyright 2017, Paradoxon. All Rights Reserved.
+ * Distributed under the terms of the MIT License.
+ */
 
-#include <View.h>
-#include <Window.h>
-#include <Button.h>
-#include <ListView.h>
-#include <ListItem.h>
+#ifndef FONT_PANEL_H
+#define FONT_PANEL_H
+
 #include <Font.h>
-#include <Message.h>
-#include <Messenger.h>
-#include <Catalog.h>
+#include "FontView.h"
 
-#undef B_TRANSLATION_CONTEXT
-#define B_TRANSLATION_CONTEXT "FontPanel"
+class BMessage;
+class BMessenger;
+class BWindow;
 
-class FontWindow;
+enum font_panel_mode {
+	FONT_PANEL,
+	MIN_FONT_PANEL
+	MAX_FONT_PANEL
+};
+
+enum font_panel_button {
+	B_CANCEL_BUTTON,
+	B_DEFAULT_BUTTON
+};
 
 enum
 {
@@ -31,34 +39,55 @@ enum
 	M_HIDE_WINDOW
 };
 
-const float		kMarginTopBottom	= 2.0;
-const float		kMarginLeftRight	= 4.0;
 
 
-class FontPanel
-{
-public:
-						FontPanel(BMessenger *target = NULL,
-									BMessage *message = NULL,
-									float size = 12,
-									bool modal = false,
-									bool hide_when_done = true);
-	virtual				~FontPanel(void);
-			void		SelectFont(const BFont &font);
-			void		SelectFont(font_family family, font_style style,
-									float size = 12);
-			void		Show();
-			void		Hide();
-			bool		IsShowing(void) const;
-			void		SetTarget(BMessenger msgr);
-			void		SetMessage(BMessage *msg);
-			BWindow *	Window(void) const;
-			void		SetHideWhenDone(bool value);
-			bool		HideWhenDone(void) const;
-			void		SetFontSize(uint16 size);
-private:
-		FontWindow		*fWindow;
+
+class FontPanel {
+	public:
+		FontPanel(font_panel_mode = FONT_PANEL,
+			BMessenger *target = NULL,
+			const BFont* font	= NULL,
+			const BString *prevString = NULL,
+			BMessage *message = NULL,
+			bool modal = false,
+			bool hide_when_done = true);
+		virtual			~FontPanel(void);
 	
+		void			Show();
+		void			Hide();
+		bool			IsShowing(void) const;
+	
+		virtual void	WasHidden();
+		virtual void	SelectionChanged();
+		virtual void	SendMessage(const BMessenger* target, BMessage* message);
+	
+		BWindow*		Window() const;
+		BMessenger		Messenger() const;
+	
+		font_panel_mode	PanelMode() const;
+		void			SetTarget(BMessenger target);
+		void			SetMessage(BMessage *message);
+	
+	
+		void			SetFont(const BFont &font);
+		statust_t		SetFamilyAndStyle(const font_family family,
+							const font_style style);
+		status_t		SetFamilyAndFace(const font_family family,
+							uint16 face);
+		void			SetSize(uint16 size);
+		
+		
+		
+		void			SetButtonLabel(font_panel_button button, const char* label);							
+		
+		void			SetHideWhenDone(bool hideWhenDone);
+		bool			HidesWhenDone(void) const;
+		void			Refresh();
+
+	
+private:
+		BWindow			*fWindow;
+		FontView		*fFontView;
 };
 
-#endif
+#endif  /* FONT_PANEL_H */
