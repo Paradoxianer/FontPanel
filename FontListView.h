@@ -12,8 +12,8 @@
 class FontListView : public BListView
 {
 public:
-				FontView(void);
-				~FontView(void);
+				FontListView(void);
+				~FontListView(void);
 	
 	void		AttachedToWindow(void);
 	void		MessageReceived(BMessage *msg);

@@ -15,7 +15,7 @@ class BWindow;
 
 enum font_panel_mode {
 	FONT_PANEL,
-	MIN_FONT_PANEL
+	MIN_FONT_PANEL,
 	MAX_FONT_PANEL
 };
 
@@ -50,7 +50,8 @@ class FontPanel {
 			const BString *prevString = NULL,
 			BMessage *message = NULL,
 			bool modal = false,
-			bool hide_when_done = true);
+			bool hide_when_done = true,
+			bool live_update = true);
 		virtual			~FontPanel(void);
 	
 		void			Show();
@@ -70,7 +71,7 @@ class FontPanel {
 	
 	
 		void			SetFont(const BFont &font);
-		statust_t		SetFamilyAndStyle(const font_family family,
+		status_t		SetFamilyAndStyle(const font_family family,
 							const font_style style);
 		status_t		SetFamilyAndFace(const font_family family,
 							uint16 face);
