@@ -4,7 +4,7 @@
 #include <Window.h>
 #include <PopUpMenu.h>
 
-#include "FontView.h"
+#include "FontListView.h"
 #include "FontPreview.h"
 
 
@@ -19,11 +19,13 @@ public:
 	
 	void			ReallyQuit(void) { fReallyQuit = true; }
 	
-	FontView		*fView;
+	
 
 private:
-	bool			fReallyQuit;
+	FontListView	*fView;
 	FontPreview		*fPrevView;
+	
+	bool			fReallyQuit;
 	
 	/*BCheckBox		fBold;
 	BCheckBox		fItalic;
