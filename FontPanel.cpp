@@ -7,27 +7,45 @@
 #include "FontPanel.h"
 
 #include "FontView.h"
-#include "FontWindow.h"
 
-#include <Spinner.h>
 #include <Application.h>
 #include <Invoker.h>
+#include <Message.h>
+#include <Messenger.h>
 #include <String.h>
+#include <Screen.h>
+#include <Window.h>
 #include <stdio.h>
 
-// TODO: Add Escape key as a shortcut for cancelling
 
 
-
-FontPanel::FontPanel(font_panel_mode,
+FontPanel::FontPanel(font_panel_mode mode,
 			BMessenger *target,
 			const BFont *font,
 			const BString *prevString ,
 			BMessage *message,
 			bool modal,
 			bool hide_when_done,
-			bool live_update)
+			bool update_on_change):
+			BWindow(BRect(100,100,400,200),"FontPanel",
+				B_DOCUMENT_WINDOW_LOOK, modal ? B_MODAL_APP_WINDOW_FEEL : B_NORMAL_WINDOW_FEEL,
+				B_WILL_ACCEPT_FIRST_CLICK | B_NO_WORKSPACE_ACTIVATION,
+				B_CURRENT_WORKSPACE)
 {
+	fMode = mode;
+	fHideWhenDone = hide_when_done;
+	fUpdateOnChange=update_on_change;
+	if (target)
+		fTarget = *target;
+	else
+		fTarget = BMessenger(be_app);
+
+	if (message)
+		SetMessage(message);
+	else
+		fMessage = new BMessage(B_REFS_RECEIVED);
+
+
 }
 
 
@@ -39,7 +57,7 @@ FontPanel::~FontPanel(void)
 void FontPanel::SetFont(const BFont &font)
 {
 	//lock Window??
-	fWindow->SetFont();
+	//fWindow->SetFont();
 }
 
 status_t FontPanel::SetFamilyAndStyle(const font_family family,
@@ -109,14 +127,15 @@ FontPanel::Window(void) const
 void
 FontPanel::SetTarget(BMessenger msgr)
 {
-	fWindow->fView->SetTarget(msgr);
+	fTarget = target;
 }
 
 
 void
 FontPanel::SetMessage(BMessage *msg)
 {
-	fWindow->fView->SetMessage(msg);
+	delete fMessage;
+	fMessage = new BMessage(*message);
 }
 
 
@@ -128,7 +147,7 @@ FontPanel::SetHideWhenDone(bool value)
 
 
 bool
-FontPanel::HideWhenDone(void) const
+FontPanel::HidesWhenDone(void) const
 {
 //	return fWindow->HideWhenDone();
 }
@@ -137,5 +156,5 @@ FontPanel::HideWhenDone(void) const
 void
 FontPanel::SetFontSize(uint16 size)
 {
-	fWindow->fView->SetFontSize(size);
+	//fWindow->fView->SetFontSize(size);
 }

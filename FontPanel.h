@@ -7,16 +7,18 @@
 #define FONT_PANEL_H
 
 #include <Font.h>
-#include "FontView.h"
+#include <Window.h>
 
 class BMessage;
 class BMessenger;
-class BWindow;
+class BButton;
+class FontView;
+
 
 enum font_panel_mode {
 	FONT_PANEL,
-	MIN_FONT_PANEL,
-	MAX_FONT_PANEL
+	MIN_FONT_PANEL, //not yet supported .. just a List of Fontnames + FontSize
+	MAX_FONT_PANEL  //with spacing and so on
 };
 
 enum font_panel_button {
@@ -24,34 +26,26 @@ enum font_panel_button {
 	B_DEFAULT_BUTTON
 };
 
-enum
-{
-	M_FONT_SELECTED='mfsl'
-};
-
-enum
-{
+enum font_messages{
 	M_OK = 'm_ok',
 	M_CANCEL,
 	M_SIZE_CHANGED,
-	M_FAMILY_SELECTED,
+	M_FAMILY_SELECTED ='mfsl',
 	M_STYLE_SELECTED,
 	M_HIDE_WINDOW
 };
 
 
-
-
-class FontPanel {
+class FontPanel: public BWindow {
 	public:
-		FontPanel(font_panel_mode = FONT_PANEL,
+		FontPanel(font_panel_mode mode = FONT_PANEL,
 			BMessenger *target = NULL,
 			const BFont* font	= NULL,
 			const BString *prevString = NULL,
 			BMessage *message = NULL,
 			bool modal = false,
 			bool hide_when_done = true,
-			bool live_update = true);
+			bool update_on_change = true);
 		virtual			~FontPanel(void);
 	
 		void			Show();
@@ -75,8 +69,10 @@ class FontPanel {
 							const font_style style);
 		status_t		SetFamilyAndFace(const font_family family,
 							uint16 face);
-		void			SetSize(uint16 size);
+		void			SetFontSize(uint16 size);
 		
+		BFont*			Font(void) const;
+		uint32			FontMask(void) const;
 		
 		
 		void			SetButtonLabel(font_panel_button button, const char* label);							
@@ -86,9 +82,16 @@ class FontPanel {
 		void			Refresh();
 
 	
-private:
-		BWindow			*fWindow;
+	private:
 		FontView		*fFontView;
+		BButton			*fOKButton;
+		BButton			*fCancelButton;
+		BButton			*fDefaultButton;			
+		font_panel_mode	fMode;
+		bool			fHideWhenDone;
+		bool			fUpdateOnChange;
+		BMessenger		fTarget;
+		BMessage		*fMessage;
 };
 
 #endif  /* FONT_PANEL_H */

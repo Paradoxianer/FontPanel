@@ -22,22 +22,14 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
 {	
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
+	//check if this is enought
 	SetSizeLimits(400,2400,300,2400);
-	fReallyQuit = false;
 	fView = new FontView();
 	fView->SetSelectionMessage(new BMessage(M_FONT_SELECTED));
 	fView->SetTarget(this);
-	fPrevView = new FontPreview();
 	SetLayout(new BGroupLayout(B_VERTICAL));
-
- 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
- 		.Add(new BScrollView("fontScroller",fView, 0,false, true))
- 		.Add(BGridLayoutBuilder()
- 			.Add(new BCheckBox(B_TRANSLATE("Bold")),0,0)
- 			.Add(new BCheckBox(B_TRANSLATE("Italic")),0,1)
- 			.Add(new BCheckBox(B_TRANSLATE("Strike Out")),1,0)
- 		)
-		.Add(fPrevView)
+	AddChild(BGroupLayoutBuilder(B_VERTICAL)
+ 		.Add(fView)
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
 			.AddGlue()
 			.Add(new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL)))
@@ -49,17 +41,35 @@ FontWindow::FontWindow(const BRect frame, float fontsize)
 
 FontWindow::~FontWindow(void)
 {
-	ReallyQuit();
-	PostMessage(B_QUIT_REQUESTED);
+	
 }
 
 
 bool
 FontWindow::QuitRequested(void)
 {
-	if (!fReallyQuit)
-		PostMessage(M_HIDE_WINDOW);
+	if (fClientObject != NULL) {
+		Hide();
+		if (fClientObject != NULL)
+			fClientObject->WasHidden();
+
+		BMessage message(*fMessage);
+		message.what = B_CANCEL;
+		message.AddInt32("old_what", (int32)fMessage->what);
+		message.AddPointer("source", fClientObject);
+		fTarget.SendMessage(&message);
+
+		return false;
+	}
+
+	return _inherited::QuitRequested();
 	return fReallyQuit;
+}
+
+
+void FontWindow::SetClientObject(FontPanel *panel)
+{
+	fClientObject = panel;
 }
 
  
@@ -94,40 +104,4 @@ FontWindow::MessageReceived(BMessage *msg)
 	}
 }
 
-/*Update StyleList
-			const int32 styles = count_font_styles(fontFamilyName);
 
-			BMessage* familyMsg = new BMessage(FONTFAMILY_CHANGED_MSG);
-			familyMsg->AddString("_family", fontFamilyName);
-			BMenuItem* familyItem = new BMenuItem(stylemenu, familyMsg);
-			fFontFamilyMenu->AddItem(familyItem);
-
-			for (int32 j = 0; j < styles; j++) {
-				if (get_font_style(fontFamilyName, j, &fontStyleName) == B_OK) {
-					BMessage* fontMsg = new BMessage(FONTSTYLE_CHANGED_MSG);
-					fontMsg->AddString("_family", fontFamilyName);
-					fontMsg->AddString("_style", fontStyleName);
-
-					BMenuItem* styleItem = new BMenuItem(fontStyleName, fontMsg);
-					styleItem->SetMarked(false);
-
-					// setInitialfont is used when we attach the FontField
-					if (!strcmp(fontStyleName, currentStyle)
-						&& !strcmp(fontFamilyName, currentFamily)
-						&& setInitialfont) {
-						styleItem->SetMarked(true);
-						familyItem->SetMarked(true);
-
-						BString string;
-						string << currentFamily << " " << currentStyle;
-
-						if (fFontMenuField)
-							fFontMenuField->MenuItem()->SetLabel(string.String());
-					}
-					stylemenu->AddItem(styleItem);
-				}
-			}
-
-			stylemenu->SetRadioMode(true);
-			stylemenu->SetTargetForItems(this);
-*/

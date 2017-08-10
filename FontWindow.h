@@ -2,60 +2,31 @@
 #define FONT_WINDOW_H_
 
 #include <Window.h>
-#include <PopUpMenu.h>
 
-#include "FontListView.h"
-#include "FontPreview.h"
+#include "FontView.h"
 
-
+class FontPanel;
 
 class FontWindow : public BWindow
 {
 public:
 					FontWindow(const BRect frame, float fontsize);
 					~FontWindow(void);
+	void			SetClientObject(FontPanel *client);
 	bool			QuitRequested(void);
 	void			MessageReceived(BMessage *msg);
 	
-	void			ReallyQuit(void) { fReallyQuit = true; }
 	
 	
 
 private:
-	FontListView	*fView;
-	FontPreview		*fPrevView;
-	
-	bool			fReallyQuit;
-	
-	/*BCheckBox		fBold;
-	BCheckBox		fItalic;
-	
-	BCheckBox		fStrikeOut;*/
-	
-	BPopUpMenu		*fForeGroundColor;
-	BPopUpMenu		*fBackGroundColor;
-	
-	/*BSpinner		fSize;
-	BDecimalSpinner	fOutline;*/
-	
-	
-	
-	//shear
-	//rotation
-	//spacing
-	
-	//ForeGroundColor
-	//BackGroundColor
-	
-	
-	//Italic
-	//Bold
-	
-	//Outlined
-	
-	//Strike Out
-	//Underline
-	
+		FontView		*fFontView;
+		BButton			*fOKButton;
+		BButton			*fCancelButton;
+		BButton			*fDefaultButton;	
+		
+		FontPanel		*fClientObject;
+
 };
 
 #endif
