@@ -7,7 +7,6 @@
 #include <ListItem.h>
 #include <String.h>
 
-#define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
 
 class FontListView : public BListView
 {
