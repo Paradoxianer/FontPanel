@@ -14,14 +14,15 @@
 #include "FontPanel.h"
 
 
-class FontView {
+class FontView : public BView{
 
 	public:
-		FontView(font_panel_mode mode,	BMessenger *target,
-			const BFont *font,
-			const BString *prevString ,
-			BMessage *message,
-			bool live_update);
+		FontView(font_panel_mode mode = FONT_PANEL,
+			const BFont *font = be_plain_font,
+			const BString *prevString = new BString(PREVIEW_STR),
+			BMessenger *target = NULL,
+			BMessage *message = NULL,
+			bool live_update = true);
 		~FontView(void);
 		
 		BMessenger		Messenger() const;
@@ -34,8 +35,11 @@ class FontView {
 							const font_style style);
 		status_t		SetFamilyAndFace(const font_family family,
 							uint16 face);
-		void			SetSize(uint16 size);
-			
+		void			SetFontSize(uint16 size);
+		
+		void			MessageReceived(BMessage* message);
+		
+					
 	private:
 		
 		FontListView	*fFontListView;
