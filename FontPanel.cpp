@@ -9,6 +9,12 @@
 #include "FontView.h"
 
 #include <Application.h>
+#include <Button.h>
+#include <Catalog.h>
+#include <GroupLayout.h>
+#include <GroupLayoutBuilder.h>
+#include <GridLayout.h>
+#include <GridLayoutBuilder.h>
 #include <Invoker.h>
 #include <Message.h>
 #include <Messenger.h>
@@ -17,12 +23,14 @@
 #include <Window.h>
 #include <stdio.h>
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FontPanel"
 
 
 FontPanel::FontPanel(font_panel_mode mode,
-			BMessenger *target,
 			const BFont *font,
-			const BString *prevString ,
+			const BString *prevString,
+			BMessenger *target,
 			BMessage *message,
 			bool modal,
 			bool hide_when_done,
@@ -32,8 +40,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 				B_WILL_ACCEPT_FIRST_CLICK | B_NO_WORKSPACE_ACTIVATION,
 				B_CURRENT_WORKSPACE)
 {
-	fMode = mode;
-	fHideWhenDone = hide_when_done;
+	fHidesWhenDone = hide_when_done;
 	fUpdateOnChange=update_on_change;
 	if (target)
 		fTarget = *target;
@@ -43,9 +50,25 @@ FontPanel::FontPanel(font_panel_mode mode,
 	if (message)
 		SetMessage(message);
 	else
-		fMessage = new BMessage(B_REFS_RECEIVED);
+	fFontView = new FontView(mode,font, prevString, &fTarget, message, true);
+	fOKButton = new BButton("ok",B_TRANSLATE("OK"),new BMessage(M_OK));
+	fCancelButton = new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL));
+	fDefaultButton = new BButton("default",B_TRANSLATE("Default"),new BMessage(M_CANCEL));
 
-
+	RemoveShortcut('w',B_COMMAND_KEY);
+	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
+	//check if this is enought
+	SetSizeLimits(400,2400,300,2400);
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	AddChild(BGroupLayoutBuilder(B_VERTICAL)
+ 		.Add(fFontView)
+		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
+			.AddGlue()
+			.Add(fOKButton)
+			.Add(fCancelButton)
+			.Add(fDefaultButton)
+		)
+ 	);
 }
 
 
@@ -57,20 +80,20 @@ FontPanel::~FontPanel(void)
 void FontPanel::SetFont(const BFont &font)
 {
 	//lock Window??
-	//fWindow->SetFont();
 }
 
 status_t FontPanel::SetFamilyAndStyle(const font_family family,
 							const font_style style)
 {
 }
+
 status_t FontPanel::SetFamilyAndFace(const font_family family,
 							uint16 face)
 {
 }
 
 
-void FontPanel::SetSize(uint16 size)
+void FontPanel::SetFontSize(uint16 size)
 {
 }
 
@@ -81,58 +104,58 @@ FontPanel::Show()
 	// if the window is already showing, don't jerk the workspaces around,
 	// just pull it to us
 	uint32 workspace = 1UL << (uint32)current_workspace();
-	uint32 windowWorkspaces = fWindow->Workspaces();
+	uint32 windowWorkspaces = Workspaces();
 	if (!(windowWorkspaces & workspace)) {
 		// window in a different workspace, reopen in current
-		fWindow->SetWorkspaces(workspace);
+		SetWorkspaces(workspace);
 	}
 
 	// Position the file panel like an alert
 	BWindow* parent = dynamic_cast<BWindow*>(
 		BLooper::LooperForThread(find_thread(NULL)));
 	const BRect frame = parent != NULL ? parent->Frame()
-		: BScreen(fWindow).Frame();
-
-	fWindow->MoveTo(fWindow->AlertPosition(frame));
+		: BScreen(this).Frame();
+	
+	//MoveTo(AlertPosition(frame));
 	if (!IsShowing())
-		fWindow->Show();
+		BWindow::Show();
 
-	fWindow->Activate();
+	Activate();
 }
 
 
 void
 FontPanel::Hide()
 {
-	if (!fWindow->IsHidden())
-		fWindow->QuitRequested();
-	fWindow->Hide();
+	if (!HidesWhenDone())
+		QuitRequested();
+	Hide();
 }
 
 
 bool
 FontPanel::IsShowing(void) const
 {
-	return !fWindow->IsHidden();
+	return !IsHidden();
 }
 
 
 BWindow *
-FontPanel::Window(void) const
+FontPanel::Window(void)
 {
-	return fWindow;
+	return this;
 }
 
 
 void
-FontPanel::SetTarget(BMessenger msgr)
+FontPanel::SetTarget(BMessenger target)
 {
 	fTarget = target;
 }
 
 
 void
-FontPanel::SetMessage(BMessage *msg)
+FontPanel::SetMessage(BMessage *message)
 {
 	delete fMessage;
 	fMessage = new BMessage(*message);
@@ -149,12 +172,6 @@ FontPanel::SetHideWhenDone(bool value)
 bool
 FontPanel::HidesWhenDone(void) const
 {
-//	return fWindow->HideWhenDone();
+	return fHidesWhenDone;
 }
 
-
-void
-FontPanel::SetFontSize(uint16 size)
-{
-	//fWindow->fView->SetFontSize(size);
-}

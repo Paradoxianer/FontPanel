@@ -8,12 +8,13 @@
 
 #include <Font.h>
 #include <Window.h>
+#include <Messenger.h>
+
 
 class BMessage;
-class BMessenger;
 class BButton;
 class FontView;
-
+class BString;
 
 enum font_panel_mode {
 	FONT_PANEL,
@@ -25,23 +26,34 @@ enum font_panel_button {
 	B_CANCEL_BUTTON,
 	B_DEFAULT_BUTTON
 };
-
+//M_OK			= 'm_ok',
+//	M_CANCEL		= 'm_cl',
 enum font_messages{
-	M_OK = 'm_ok',
-	M_CANCEL,
-	M_SIZE_CHANGED,
-	M_FAMILY_SELECTED ='mfsl',
-	M_STYLE_SELECTED,
-	M_HIDE_WINDOW
+	M_SIZE_CHANGED				= 'm_sz',
+	M_FAMILY_CHANGED			= 'm_fm',
+	M_BOLD_CHANGED				= 'm_bd',
+	M_ITALIC_CHANGED			= 'm_it',
+	M_STRIKE_OUT_CHANGED		= 'm_so',
+	M_UNDERLINE_CHANGED 		= 'm_ul',
+	M_FORE_GROUND_COLOR_CHANGED	= 'm_fc',
+	M_FILL_COLOR_CHANGED		= 'm_ic',
+	M_BACK_GROUND_COLOR_CHANGED	= 'm_bc',
+	M_OUTLINE_CHANGED			= 'm_ol',
+	M_SHEAR_CHANGED				= 'm_sh',
+	M_SPACING_CHANGED			= 'm_sp',
+	M_ROTATION_CHANGED			= 'm_rt',
+
 };
+
+#define	PREVIEW_STR "AaBbCcDdEeFfGg!?1234567890"
 
 
 class FontPanel: public BWindow {
 	public:
 		FontPanel(font_panel_mode mode = FONT_PANEL,
-			BMessenger *target = NULL,
 			const BFont* font	= NULL,
-			const BString *prevString = NULL,
+			const BString *prevString = new BString(PREVIEW_STR),
+			BMessenger *target = NULL,
 			BMessage *message = NULL,
 			bool modal = false,
 			bool hide_when_done = true,
@@ -52,11 +64,11 @@ class FontPanel: public BWindow {
 		void			Hide();
 		bool			IsShowing(void) const;
 	
-		virtual void	WasHidden();
-		virtual void	SelectionChanged();
-		virtual void	SendMessage(const BMessenger* target, BMessage* message);
+		virtual void	WasHidden(){};
+		virtual void	SelectionChanged(){};
+		virtual void	SendMessage(const BMessenger* target, BMessage* message){};
 	
-		BWindow*		Window() const;
+		BWindow*		Window();
 		BMessenger		Messenger() const;
 	
 		font_panel_mode	PanelMode() const;
@@ -87,11 +99,10 @@ class FontPanel: public BWindow {
 		BButton			*fOKButton;
 		BButton			*fCancelButton;
 		BButton			*fDefaultButton;			
-		font_panel_mode	fMode;
-		bool			fHideWhenDone;
+		bool			fHidesWhenDone;
 		bool			fUpdateOnChange;
-		BMessenger		fTarget;
 		BMessage		*fMessage;
+		BMessenger		fTarget;
 };
 
 #endif  /* FONT_PANEL_H */
