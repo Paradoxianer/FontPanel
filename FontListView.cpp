@@ -29,10 +29,6 @@ FontListView::AttachedToWindow(void)
 }
 
 
-void
-FontListView::SetFontSize(uint16 size)
-{
-}
 
 
 void
@@ -44,8 +40,24 @@ FontListView::SelectFont(font_family family, font_style style, float size)
 void
 FontListView::SelectFont(const BFont &font)
 {
+	Select(IndexOf(new BFont(font)));
+	ScrollToSelection();
 }
 
+int32 FontListView::IndexOf(BFont *font) const
+{
+	font_family family;
+	font_style style;
+	font->GetFamilyAndStyle(&family,&style);
+	FontItem	*tmpItem;
+	for (int32 i=0; i<CountItems();i++) {
+		tmpItem = (FontItem*)ItemAt(i);
+		//compare if the familys are the same if 
+		if (strcmp(tmpItem->GetFamily(),family)==B_OK)
+			return i;
+	}
+	return -1;
+}
 
 void
 FontListView::MessageReceived(BMessage *msg)
@@ -80,7 +92,6 @@ FontListView::RescanForFonts(void)
 void FontListView::SetFilter(char *newFilter)
 {
 	filterString=newFilter;
-	int32		count	= CountItems();
 	RescanForFonts();
 }
 
@@ -89,6 +100,14 @@ FontListView::DeleteAll(void)
 {	
 	MakeEmpty();
 }
+
+void
+FontListView::SetFont(const BFont* font, uint32 mask)
+{
+	BListView::SetFont(font,mask);
+	//SelectFont(font);
+}
+
 
 FontItem::FontItem(font_family myFamily): BListItem()
 {

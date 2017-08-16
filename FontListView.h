@@ -20,7 +20,6 @@ public:
 	void		AttachedToWindow(void);
 	void		MessageReceived(BMessage *msg);
 
-	void		SetFontSize(uint16 size);
 	void		SetUnderline(bool underline);
 	void		SetStrikeout(bool strkeout);
 	void		SetItalic(bool italic);
@@ -37,6 +36,10 @@ public:
 	BString*	PreviewString(void){return &fPrevString;};
 	void		SetPreviewString(char *prevString){fPrevString.SetTo(prevString);};
 	void		SetPreviewString(BString prevString){fPrevString.SetTo(prevString);};
+	
+	int32		IndexOf(BFont *font) const;
+	void		SetFont(const BFont* font, uint32 mask
+							= B_FONT_ALL);
 	
 private:	
 	void		RescanForFonts(void);
