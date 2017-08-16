@@ -11,6 +11,7 @@ int main() {
       set globals, etc. */
    FontPanel *fPanel = new FontPanel(FONT_PANEL,be_plain_font, new BString("Timon"),NULL,
 		NULL, false, true, true);
+	fPanel->SetHideWhenDone(false);
 	fPanel->Show();
    be_app->Run();
    /* Clean up -- write settings, etc. */
