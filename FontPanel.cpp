@@ -55,6 +55,8 @@ FontPanel::FontPanel(font_panel_mode mode,
 	fOKButton = new BButton("ok",B_TRANSLATE("OK"),new BMessage(M_OK));
 	fCancelButton = new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL));
 	fDefaultButton = new BButton("default",B_TRANSLATE("Default"),new BMessage(M_CANCEL));
+	fStatus = new BStatusBar("statusbar",B_TRANSLATE("Type to filter"));
+	fStatus->SetBarHeight(12);
 
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
@@ -69,8 +71,9 @@ FontPanel::FontPanel(font_panel_mode mode,
 			.Add(fCancelButton)
 			.Add(fDefaultButton)
 		)
-		.Add(new BStatusBar("statusbar","Type to filter"))
+//		.Add(fStatus,0.2)
  	);
+ 	fFontView->MakeFocus();
 }
 
 
