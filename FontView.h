@@ -35,6 +35,7 @@ class FontView : public BView{
 		void			SetMessage(BMessage *message);
 	
 		void			SetFont(const BFont &font);
+		BFont*			Font(void) const;
 		status_t		SetFamilyAndStyle(const font_family family,
 							const font_style style);
 		status_t		SetFamilyAndFace(const font_family family,
@@ -70,6 +71,8 @@ class FontView : public BView{
 		FontPreview		*fPreview;
 		
 		BString			fTypeAhead;
+		
+		BFont			fFont;
 		//Book?
 		//Condensed?
 		//Oblique?

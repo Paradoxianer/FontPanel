@@ -101,7 +101,13 @@ FontView::SetMessage(BMessage *message)
 	
 void 
 FontView::SetFont(const BFont &font)
-{}
+{
+}
+
+BFont*			Font(void) const
+{
+	return fFont;
+}
 
 status_t
 FontView::SetFamilyAndStyle(const font_family family,
@@ -111,12 +117,15 @@ FontView::SetFamilyAndStyle(const font_family family,
 status_t
 FontView::SetFamilyAndFace(const font_family family,
 							uint16 face)
-{}
+{
+}
 
 void
 FontView::SetFontSize(uint16 size)
-{}
+{
+}
 		
 void
 FontView::MessageReceived(BMessage* message)
-{}
+{
+}
