@@ -7,6 +7,7 @@
 #define FONT_PANEL_H
 
 #include <Font.h>
+#include <String.h>
 #include <Window.h>
 #include <Messenger.h>
 
@@ -14,7 +15,6 @@
 class BMessage;
 class BButton;
 class FontView;
-class BString;
 
 enum font_panel_mode {
 	FONT_PANEL,
@@ -26,8 +26,14 @@ enum font_panel_button {
 	B_CANCEL_BUTTON,
 	B_DEFAULT_BUTTON
 };
-//M_OK			= 'm_ok',
-//	M_CANCEL		= 'm_cl',
+
+enum font_panel_messages {
+	M_OK			= 'm_ok',
+	M_CANCEL		= 'm_cl',
+	M_HIDE_WINDOW	= 'm_hw',
+	M_FONT_SELECTED	= 'm_fs'
+};
+
 enum font_messages{
 	M_SIZE_CHANGED				= 'm_sz',
 	M_FAMILY_CHANGED			= 'm_fm',

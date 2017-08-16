@@ -18,6 +18,7 @@
 #include <Invoker.h>
 #include <Message.h>
 #include <Messenger.h>
+#include <StatusBar.h>
 #include <String.h>
 #include <Screen.h>
 #include <Window.h>
@@ -58,7 +59,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
 	//check if this is enought
-	SetSizeLimits(400,2400,300,2400);
+	SetSizeLimits(300,2400,300,2400);
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
  		.Add(fFontView)
@@ -68,6 +69,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 			.Add(fCancelButton)
 			.Add(fDefaultButton)
 		)
+		.Add(new BStatusBar("statusbar","Type to filter"))
  	);
 }
 
@@ -127,9 +129,8 @@ FontPanel::Show()
 void
 FontPanel::Hide()
 {
-	if (!HidesWhenDone())
-		QuitRequested();
-	Hide();
+	if (HidesWhenDone())
+		Quit();
 }
 
 
