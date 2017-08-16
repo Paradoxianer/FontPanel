@@ -9,10 +9,12 @@
 #include <SupportDefs.h>
 #include <CheckBox.h>
 #include <PopUpMenu.h>
+#include <private/interface/ColorMenuItem.h>
 #include <private/interface/DecimalSpinner.h>
+
 #include "FontListView.h"
 #include "FontPanel.h"
-
+#include "FontPreview.h"
 
 class FontView : public BView{
 
@@ -25,7 +27,9 @@ class FontView : public BView{
 			bool live_update = true);
 		~FontView(void);
 		
-		BMessenger		Messenger() const;
+		void			Init(void);
+		
+		BMessenger		Messenger(void) const;
 
 		void			SetTarget(BMessenger target);
 		void			SetMessage(BMessage *message);
@@ -63,6 +67,9 @@ class FontView : public BView{
 
 		BDecimalSpinner	*fSpacing;
 	
+		FontPreview		*fPreview;
+		
+		BString			fTypeAhead;
 		//Book?
 		//Condensed?
 		//Oblique?
