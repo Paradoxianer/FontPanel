@@ -7,6 +7,9 @@
 #include <ListItem.h>
 #include <String.h>
 
+const float kMarginLeftRight = 5.0;
+const float kMarginTopBottom = 5.0;
+
 
 class FontListView : public BListView
 {
