@@ -71,8 +71,10 @@ FontListView::KeyDown(const char* bytes, int32 numBytes)
 }
 
 void
-FontListView::SelectFont(font_family family, font_style style, float size)
+FontListView::SelectFont(font_family family)
 {
+	Select(IndexOf(family));
+	ScrollToSelection();
 }
 
 
@@ -88,6 +90,11 @@ int32 FontListView::IndexOf(BFont *font) const
 	font_family family;
 	font_style style;
 	font->GetFamilyAndStyle(&family,&style);
+	return IndexOf(family);
+}
+
+int32 FontListView::IndexOf(font_family family) const
+{
 	FontItem	*tmpItem;
 	for (int32 i=0; i<CountItems();i++) {
 		tmpItem = (FontItem*)ItemAt(i);
@@ -98,11 +105,12 @@ int32 FontListView::IndexOf(BFont *font) const
 	return -1;
 }
 
+
 void
 FontListView::MessageReceived(BMessage *msg)
 {
 	switch (msg->what) {
-/*		case '': {
+		/*case '': {
 			break;
 		}*/
 		default: {

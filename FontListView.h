@@ -29,7 +29,7 @@ public:
 	void		SetOutlined(int32 outline);
 
 	void		SelectFont(const BFont &font);
-	void		SelectFont(font_family family, font_style style, float size);
+	void		SelectFont(font_family family);
 
 	void		SetFilter(char *newFilter);
 	void		ResetFilter(void);
@@ -41,6 +41,8 @@ public:
 	void		SetPreviewString(BString prevString){fPrevString.SetTo(prevString);};
 	
 	int32		IndexOf(BFont *font) const;
+	int32		IndexOf(font_family family) const;
+
 	void		SetFont(const BFont* font, uint32 mask
 							= B_FONT_ALL);
 	
