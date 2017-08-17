@@ -5,17 +5,18 @@
 ## architecture of Haiku.
 
 # The name of the binary.
+# NAME = libfontpanel.lib
 NAME = FontPanelTest
-
 # The type of binary, must be one of:
 #	APP:	Application
 #	SHARED:	Shared library or add-on
 #	STATIC:	Static library archive
 #	DRIVER: Kernel driver
-TYPE = 
+# TYPE = SHARED
+TYPE = APP
 
 # 	If you plan to use localization, specify the application's MIME signature.
-APP_MIME_SIG = 
+APP_MIME_SIG = application/x-vnd.libfontpanel
 
 #	The following lines tell Pe and Eddie where the SRCS, RDEFS, and RSRCS are
 #	so that Pe and Eddie can fill them in for you.
@@ -28,9 +29,10 @@ APP_MIME_SIG =
 #	means this Makefile will not work correctly if two source files with the
 #	same name (source.c or source.cpp) are included from different directories.
 #	Also note that spaces in folder names do not work well with this Makefile.
-SRCS =	FontPanel.cpp \
+SRCS =	FontListView.cpp \
+		FontPanel.cpp \
 		FontPreview.cpp \
-		FontView.cpp \
+		FontView.cpp  \
 		TestFontPanel.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
@@ -100,11 +102,11 @@ WARNINGS = ALL
 
 #	With image symbols, stack crawls in the debugger are meaningful.
 #	If set to "TRUE", symbols will be created.
-SYMBOLS := TRUE
+SYMBOLS = TRUE
 
 #	Includes debug information, which allows the binary to be debugged easily.
 #	If set to "TRUE", debug info will be created.
-DEBUGGER := TRUE
+DEBUGGER = TRUE
 
 #	Specify any additional compiler flags to be used.
 COMPILER_FLAGS = 
