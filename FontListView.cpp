@@ -26,10 +26,49 @@ void
 FontListView::AttachedToWindow(void)
 {
 	RescanForFonts();
+	SetEventMask(B_KEYBOARD_EVENTS);
+
 }
 
 
+void
+FontListView::KeyDown(const char* bytes, int32 numBytes)
+{
+	if (numBytes>0 && bytes != NULL)
+		switch (bytes[0]) {
+			case B_UP_ARROW:
+			case B_DOWN_ARROW:
+			case B_LEFT_ARROW:
+			case B_RIGHT_ARROW:
+			case B_HOME:
+			case B_END:
+			case B_ENTER:
+			case B_TAB:
+				break;
+				
+			case B_ESCAPE:
+				filterString = "";
+				break;
 
+			case B_BACKSPACE:
+				filterString.Remove(filterString.CountChars()-1,1);
+				break;
+
+			case B_DELETE:
+			case B_INSERT:
+			case B_PAGE_UP:
+			case B_PAGE_DOWN:
+			case B_SUBSTITUTE:
+			case B_FUNCTION_KEY:
+			case B_KATAKANA_HIRAGANA:
+			case B_HANKAKU_ZENKAKU:
+				break;
+			default:
+				filterString+=bytes[0];
+				break;
+		};
+		RescanForFonts();
+}
 
 void
 FontListView::SelectFont(font_family family, font_style style, float size)

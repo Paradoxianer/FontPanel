@@ -18,8 +18,11 @@ public:
 				~FontListView(void);
 	
 	void		AttachedToWindow(void);
-	void		MessageReceived(BMessage *msg);
+	void		MessageReceived(BMessage *message);
+	
+	void		KeyDown(const char* bytes, int32 numBytes);
 
+					
 	void		SetUnderline(bool underline);
 	void		SetStrikeout(bool strkeout);
 	void		SetItalic(bool italic);
