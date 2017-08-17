@@ -78,18 +78,36 @@ FontView::Init()
 	fOutline			= new BDecimalSpinner("outline", B_TRANSLATE("outline"),new BMessage(M_OUTLINE_CHANGED));
 	
 	fShear				= new BDecimalSpinner("shear", B_TRANSLATE("shear"),new BMessage(M_SHEAR_CHANGED));
-	fSpacing			= new BDecimalSpinner("spacing", B_TRANSLATE("spacing"),new BMessage(M_SPACING_CHANGED));
+	fSpacing			= new BSpinner("spacing", B_TRANSLATE("spacing"),new BMessage(M_SPACING_CHANGED));
 	
 	fPreview			= new FontPreview();
-	
+		
 	fTypeAhead			= BString();
 }
 
+void
+FontView::AttachedToWindow()
+{
+	fFontListView->SetTarget(this);
+	fBold->SetTarget(this);
+	fItalic->SetTarget(this);
+		
+	fStrikeOut->SetTarget(this);
+	fUnderline->SetTarget(this);
 
+	fSize->SetTarget(this);
+
+	fOutline->SetTarget(this);
+	
+	fShear->SetTarget(this);
+	fSpacing->SetTarget(this);
+}
 
 BMessenger
 FontView::Messenger() const
-{}
+{
+
+}
 
 void
 FontView::SetTarget(BMessenger target)
@@ -102,11 +120,35 @@ FontView::SetMessage(BMessage *message)
 void 
 FontView::SetFont(const BFont &font)
 {
+	font_family family;
+	font_style	style;
+	uint16		face;
+	font.GetFamilyAndStyle(&family, &style);
+	face = font.Face();
+	fFontListView->SelectFont(family);
+	fBold->SetValue(face & B_BOLD_FACE);
+	fItalic->SetValue(face & B_ITALIC_FACE);
+	fStrikeOut->SetValue(face & B_STRIKEOUT_FACE);
+	fUnderline->SetValue(face & B_UNDERSCORE_FACE
+);
+
+	//tab Font tab Color tab more (shear, rotation, spacing and so on)
+	/*
+		BPopUpMenu		*fForeGroundColor;
+		BPopUpMenu		*fFillColor;
+		BPopUpMenu		*fBackGroundColor;
+	*/
+	fSize->SetValue(font.Size());
+	//fOutline->SetValue(face & B_OUTLINED_FACE);
+	fShear->SetValue(font.Shear());
+	fSpacing->SetValue(font.Spacing());
+	fPreview->SetFont(&font);
 }
 
-BFont*			Font(void) const
+BFont*
+FontView::Font(void) const
 {
-	return fFont;
+	return const_cast<BFont*>(&fFont);
 }
 
 status_t
@@ -128,4 +170,37 @@ FontView::SetFontSize(uint16 size)
 void
 FontView::MessageReceived(BMessage* message)
 {
+	BFont	font;
+	uint16	face;
+	GetFont(&font);
+	switch (message->what) {
+		case M_SIZE_CHANGED:
+			font.SetSize(fSize->Value());
+			break;
+		case M_FAMILY_CHANGED:
+			break;
+		case M_BOLD_CHANGED:
+			if (fBold->Value() == 0)
+				face = face | B_BOLD_FACE;
+			else
+				face = face & (!B_BOLD_FACE);
+			break;
+		case M_ITALIC_CHANGED:
+		case M_STRIKE_OUT_CHANGED:
+		case M_UNDERLINE_CHANGED:
+		case M_FORE_GROUND_COLOR_CHANGED:
+		case M_FILL_COLOR_CHANGED:
+		case M_BACK_GROUND_COLOR_CHANGED:
+		case M_OUTLINE_CHANGED:
+		case M_SHEAR_CHANGED:
+		case M_SPACING_CHANGED:
+		case M_ROTATION_CHANGED:
+			break;
+		default:  {
+			BView::MessageReceived(message);
+			break;
+		}
+	}
+	font.SetFace(face);
+	fPreview->SetFont(&font);
 }

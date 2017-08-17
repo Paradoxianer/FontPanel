@@ -28,7 +28,7 @@ class FontView : public BView{
 		~FontView(void);
 		
 		void			Init(void);
-		
+		void			AttachedToWindow();
 		BMessenger		Messenger(void) const;
 
 		void			SetTarget(BMessenger target);
@@ -66,7 +66,7 @@ class FontView : public BView{
 		
 		BDecimalSpinner	*fShear;
 
-		BDecimalSpinner	*fSpacing;
+		BSpinner		*fSpacing;
 	
 		FontPreview		*fPreview;
 		
