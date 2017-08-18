@@ -28,6 +28,7 @@ FontView::FontView(font_panel_mode mode,
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
+			//.Add(new BScrollView("fontListScroller",fFontListView,B_FOLLOW_ALL_SIDES, 0, false, true),100)
 			.Add(fFontListView,100)
 			)
 		.Add(BGridLayoutBuilder()
@@ -49,6 +50,7 @@ FontView::FontView(font_panel_mode mode,
 			.Add(BSpaceLayoutItem::CreateGlue(),5,2)
 			.SetInsets(10,10,10,10),1
 			)
+		//.Add(new BScrollView("previewScroller",fPreview,B_FOLLOW_LEFT | B_FOLLOW_TOP, 0, true, true),1)
 		.Add(fPreview,1)
 		.SetInsets(10,10,10,10)
 		);
@@ -89,6 +91,7 @@ void
 FontView::AttachedToWindow()
 {
 	fFontListView->SetTarget(this);
+	fFontListView->SetSelectionMessage(new BMessage(M_FAMILY_CHANGED));
 	fBold->SetTarget(this);
 	fItalic->SetTarget(this);
 		
@@ -120,17 +123,18 @@ FontView::SetMessage(BMessage *message)
 void 
 FontView::SetFont(const BFont &font)
 {
+	BView::SetFont(&font,B_FONT_ALL);
+
 	font_family family;
 	font_style	style;
 	uint16		face;
 	font.GetFamilyAndStyle(&family, &style);
 	face = font.Face();
-	fFontListView->SelectFont(family);
+	//fFontListView->SelectFont(family);
 	fBold->SetValue(face & B_BOLD_FACE);
 	fItalic->SetValue(face & B_ITALIC_FACE);
 	fStrikeOut->SetValue(face & B_STRIKEOUT_FACE);
-	fUnderline->SetValue(face & B_UNDERSCORE_FACE
-);
+	fUnderline->SetValue(face & B_UNDERSCORE_FACE);
 
 	//tab Font tab Color tab more (shear, rotation, spacing and so on)
 	/*
@@ -171,27 +175,50 @@ void
 FontView::MessageReceived(BMessage* message)
 {
 	BFont	font;
-	uint16	face;
+	uint16	face = font.Face();
 	GetFont(&font);
 	switch (message->what) {
 		case M_SIZE_CHANGED:
 			font.SetSize(fSize->Value());
 			break;
-		case M_FAMILY_CHANGED:
+		case M_FAMILY_CHANGED:{
+				FontItem* item;
+				int32 selected;
+				int32 i = 0;
+				while ( (selected = fFontListView->CurrentSelection(i)) >= 0 ) {
+   					item = (FontItem*)fFontListView->ItemAt(selected);
+   					char* family = item->GetFamily();
+					font.SetFamilyAndFace(family,B_REGULAR_FACE);
+					i++;
+				}
+ 			}
 			break;
 		case M_BOLD_CHANGED:
-			if (fBold->Value() == 0)
+			if (fBold->Value() != 0)
 				face = face | B_BOLD_FACE;
-			else
-				face = face & (!B_BOLD_FACE);
+			else{
+				face = face & !B_BOLD_FACE;;
+			}
 			break;
 		case M_ITALIC_CHANGED:
+			if (fItalic->Value() != 0)
+				face = face | B_ITALIC_FACE;
+			else{
+				face = face & !B_ITALIC_FACE;;
+			}
+			break;
 		case M_STRIKE_OUT_CHANGED:
 		case M_UNDERLINE_CHANGED:
 		case M_FORE_GROUND_COLOR_CHANGED:
 		case M_FILL_COLOR_CHANGED:
 		case M_BACK_GROUND_COLOR_CHANGED:
 		case M_OUTLINE_CHANGED:
+			if (fOutline->Value() != 0)
+				face = face | B_OUTLINED_FACE;
+			else{
+				face = face & !B_OUTLINED_FACE;;
+			}
+			break;
 		case M_SHEAR_CHANGED:
 		case M_SPACING_CHANGED:
 		case M_ROTATION_CHANGED:
@@ -201,6 +228,28 @@ FontView::MessageReceived(BMessage* message)
 			break;
 		}
 	}
-	font.SetFace(face);
+	font=_FindFontForFace(font,face);
 	fPreview->SetFont(&font);
+	SetFont(font);
+}
+
+
+BFont
+FontView::_FindFontForFace(const BFont &font,uint16 face) const
+{
+	BFont newFont(font);
+	font_family family;
+	font_style style;
+	font.GetFamilyAndStyle(&family, &style);
+	int32 styleCount = count_font_styles(family);
+	for (int32 i = 0; i < styleCount; i++) {
+		uint16 styleFace;
+		if (get_font_style(family, i, &style, &styleFace) == B_OK) {
+			if (styleFace == face) {
+				newFont.SetFamilyAndStyle(family, style);
+				return newFont;
+			}
+		}
+	}
+	return newFont;
 }
