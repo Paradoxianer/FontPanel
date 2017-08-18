@@ -60,7 +60,6 @@ FontPreview::Draw(BRect r)
 {
 	BFont font;
 	GetFont(&font);
-	font.PrintToStream();
 	int32 width = (int32)font.StringWidth(fPreviewText.String());	
 	BPoint drawpt;
 	if (width < Bounds().IntegerWidth())
