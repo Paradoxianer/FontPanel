@@ -47,6 +47,7 @@ class FontView : public BView{
 					
 	private:
 		BFont			_FindFontForFace(const BFont &font,uint16 face) const;
+		uint16			_FaceFromUI();
 		
 		FontListView	*fFontListView;
 		BCheckBox		*fBold;

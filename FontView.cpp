@@ -76,6 +76,7 @@ FontView::Init()
 	fBackGroundColor	= new BPopUpMenu(B_TRANSLATE("background color"), true, true, B_ITEMS_IN_MATRIX);
 	
 	fSize				= new BDecimalSpinner("size", B_TRANSLATE("size"),new BMessage(M_SIZE_CHANGED));
+	fSize->SetMaxValue(2000);
 
 	fOutline			= new BDecimalSpinner("outline", B_TRANSLATE("outline"),new BMessage(M_OUTLINE_CHANGED));
 	
@@ -143,7 +144,7 @@ FontView::SetFont(const BFont &font)
 		BPopUpMenu		*fBackGroundColor;
 	*/
 	fSize->SetValue(font.Size());
-	//fOutline->SetValue(face & B_OUTLINED_FACE);
+	fOutline->SetValue(int32(face & B_OUTLINED_FACE));
 	fShear->SetValue(font.Shear());
 	fSpacing->SetValue(font.Spacing());
 	fPreview->SetFont(&font);
@@ -176,6 +177,7 @@ FontView::MessageReceived(BMessage* message)
 {
 	BFont	font;
 	uint16	face = font.Face();
+	face=NULL;
 	GetFont(&font);
 	switch (message->what) {
 		case M_SIZE_CHANGED:
@@ -191,33 +193,35 @@ FontView::MessageReceived(BMessage* message)
 					font.SetFamilyAndFace(family,B_REGULAR_FACE);
 					i++;
 				}
+				font=_FindFontForFace(font,_FaceFromUI());
  			}
 			break;
 		case M_BOLD_CHANGED:
-			if (fBold->Value() != 0)
-				face = face | B_BOLD_FACE;
-			else{
-				face = face & !B_BOLD_FACE;;
-			}
+				font=_FindFontForFace(font,_FaceFromUI());
 			break;
 		case M_ITALIC_CHANGED:
-			if (fItalic->Value() != 0)
-				face = face | B_ITALIC_FACE;
-			else{
-				face = face & !B_ITALIC_FACE;;
-			}
+				font=_FindFontForFace(font,_FaceFromUI());
 			break;
 		case M_STRIKE_OUT_CHANGED:
+				if (fUnderline->Value() != 0)
+					face = face | B_STRIKEOUT_FACE;
+				else
+					face = face & !B_STRIKEOUT_FACE;
+			break;
 		case M_UNDERLINE_CHANGED:
+				if (fUnderline->Value() != 0)
+					face = face | B_UNDERSCORE_FACE;
+				else
+					face = face & !B_UNDERSCORE_FACE;
+			break;
 		case M_FORE_GROUND_COLOR_CHANGED:
 		case M_FILL_COLOR_CHANGED:
 		case M_BACK_GROUND_COLOR_CHANGED:
 		case M_OUTLINE_CHANGED:
 			if (fOutline->Value() != 0)
 				face = face | B_OUTLINED_FACE;
-			else{
-				face = face & !B_OUTLINED_FACE;;
-			}
+			else
+				face = face & !B_OUTLINED_FACE;
 			break;
 		case M_SHEAR_CHANGED:
 		case M_SPACING_CHANGED:
@@ -228,8 +232,7 @@ FontView::MessageReceived(BMessage* message)
 			break;
 		}
 	}
-	font=_FindFontForFace(font,face);
-	fPreview->SetFont(&font);
+	//fPreview->SetFont(&font);
 	SetFont(font);
 }
 
@@ -252,4 +255,18 @@ FontView::_FindFontForFace(const BFont &font,uint16 face) const
 		}
 	}
 	return newFont;
+}
+
+uint16
+FontView::_FaceFromUI()
+{
+	uint16 face=0;
+	if (fBold->Value() != 0)
+		face = face | B_BOLD_FACE;
+	if (fItalic->Value() != 0)
+		face = face | B_ITALIC_FACE;
+	if (face == NULL)
+		face = B_REGULAR_FACE;
+	return face;
+	
 }
