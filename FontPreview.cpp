@@ -28,6 +28,7 @@ FontPreview::SetPreviewText(const char *text)
 			//if so we need ot get the escapements to calculate it right
 		}
 		_RecalcSize();
+		Invalidate();
 	}
 }
 
@@ -42,8 +43,15 @@ FontPreview::PreviewText(void) const
 void
 FontPreview::SetFont(const BFont* font,uint32 mask)
 {
-	BView::SetFont(font,mask);
+	
+	if ((font->Face() & B_OUTLINED_FACE) != 0){
+			_AddShapes(fPreviewText);
+			font->GetGlyphShapes(fPreviewText, fPreviewText.CountChars(), fShapes);
+			//if so we need ot get the escapements to calculate it right
+	}
 	_RecalcSize();
+	BView::SetFont(font,mask);
+	Invalidate();
 }
 
 
@@ -52,6 +60,7 @@ FontPreview::Draw(BRect r)
 {
 	BFont font;
 	GetFont(&font);
+	font.PrintToStream();
 	int32 width = (int32)font.StringWidth(fPreviewText.String());	
 	BPoint drawpt;
 	if (width < Bounds().IntegerWidth())
@@ -111,3 +120,4 @@ FontPreview::_RecalcSize(void)
 	int32 fullHeight = (int32)(fheight.ascent + fheight.descent + fheight.leading+20);
 	SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, fullHeight));
 }
+
