@@ -27,13 +27,13 @@ FontListView::AttachedToWindow(void)
 {
 	RescanForFonts();
 	SetEventMask(B_KEYBOARD_EVENTS);
-
 }
 
 
 void
 FontListView::KeyDown(const char* bytes, int32 numBytes)
 {
+	BListView::KeyDown(bytes,numBytes);
 	if (numBytes>0 && bytes != NULL)
 		switch (bytes[0]) {
 			case B_UP_ARROW:
@@ -45,7 +45,6 @@ FontListView::KeyDown(const char* bytes, int32 numBytes)
 			case B_ENTER:
 			case B_TAB:
 				break;
-				
 			case B_ESCAPE:
 				filterString = "";
 				break;
@@ -67,7 +66,7 @@ FontListView::KeyDown(const char* bytes, int32 numBytes)
 				filterString+=bytes[0];
 				break;
 		};
-		RescanForFonts();
+		//RescanForFonts();
 }
 
 void
@@ -114,7 +113,7 @@ FontListView::MessageReceived(BMessage *msg)
 			break;
 		}*/
 		default: {
-			BView::MessageReceived(msg);
+			BListView::MessageReceived(msg);
 			break;
 		}
 	}
@@ -123,6 +122,8 @@ FontListView::MessageReceived(BMessage *msg)
 void
 FontListView::RescanForFonts(void)
 {	
+	//** find the item for the CurrentSelection();
+	
 	DeleteAll();
 	int32 numFamilies = count_font_families();
 	for ( int32 i = 0; i < numFamilies; i++ )
@@ -134,6 +135,9 @@ FontListView::RescanForFonts(void)
 				AddItem(new FontItem(localfamily));
 		}
 	}
+	//try to find the correspondending item wich was selected bevor the resacn
+	//if not select the first item
+	Select(0);
 }
 
 void FontListView::SetFilter(char *newFilter)
@@ -147,14 +151,6 @@ FontListView::DeleteAll(void)
 {	
 	MakeEmpty();
 }
-
-void
-FontListView::SetFont(const BFont* font, uint32 mask)
-{
-	BListView::SetFont(font,mask);
-	//SelectFont(font);
-}
-
 
 FontItem::FontItem(font_family myFamily): BListItem()
 {

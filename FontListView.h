@@ -42,9 +42,6 @@ public:
 	
 	int32		IndexOf(BFont *font) const;
 	int32		IndexOf(font_family family) const;
-
-	void		SetFont(const BFont* font, uint32 mask
-							= B_FONT_ALL);
 	
 private:	
 	void		RescanForFonts(void);
@@ -61,22 +58,22 @@ private:
 class FontItem : public BListItem
 {
 public:
-					FontItem(font_family myFamily);
+							FontItem(font_family myFamily);
 	
-	virtual void	DrawItem(BView *owner,
-    		        BRect frame,
-            		bool complete = false);
-            char*	GetFamily(void){return family;};
-            void	SetSize(float size){font.SetSize(size);};
-			void	SetShear(float shear){font.SetShear(shear);};
-			void	SetRotation(float rotation){font.SetRotation(rotation);};
-			void	SetFalseBoldWidth(float width){font.SetFalseBoldWidth(width);};
-			void	SetSpacing(uint8 spacing){font.SetSpacing(spacing);};
-			void	SetEncoding(uint8 encoding){font.SetEncoding(encoding);};
-			void	SetFace(uint16 face){font.SetFace(face);};
-			void	SetFlags(uint32 flags){font.SetFlags(flags);};
+	virtual void			DrawItem(BView *owner,
+							BRect frame,
+							bool complete = false);
+            char*			GetFamily(void){return family;};
+            void			SetSize(float size){font.SetSize(size);};
+			void			SetShear(float shear){font.SetShear(shear);};
+			void			SetRotation(float rotation){font.SetRotation(rotation);};
+			void			SetFalseBoldWidth(float width){font.SetFalseBoldWidth(width);};
+			void			SetSpacing(uint8 spacing){font.SetSpacing(spacing);};
+			void			SetEncoding(uint8 encoding){font.SetEncoding(encoding);};
+			void			SetFace(uint16 face){font.SetFace(face);};
+			void			SetFlags(uint32 flags){font.SetFlags(flags);};
 
-			void	Update( BView *owner, const BFont *fFont);
+			void			Update( BView *owner, const BFont *fFont);
 
 private:
 		font_family	family;
