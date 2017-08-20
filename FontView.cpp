@@ -132,7 +132,7 @@ FontView::SetFont(const BFont &font)
 	font.GetFamilyAndStyle(&family, &style);
 	face = font.Face();
 	//fFontListView->SelectFont(family);
-	fBold->SetValue(face & B_BOLD_FACE);
+	/*fBold->SetValue(face & B_BOLD_FACE);
 	fItalic->SetValue(face & B_ITALIC_FACE);
 	fStrikeOut->SetValue(face & B_STRIKEOUT_FACE);
 	fUnderline->SetValue(face & B_UNDERSCORE_FACE);
@@ -177,7 +177,6 @@ FontView::MessageReceived(BMessage* message)
 {
 	BFont	font;
 	uint16	face = font.Face();
-	face=NULL;
 	GetFont(&font);
 	switch (message->what) {
 		case M_SIZE_CHANGED:
@@ -190,29 +189,38 @@ FontView::MessageReceived(BMessage* message)
 				while ( (selected = fFontListView->CurrentSelection(i)) >= 0 ) {
    					item = (FontItem*)fFontListView->ItemAt(selected);
    					char* family = item->GetFamily();
-					font.SetFamilyAndFace(family,B_REGULAR_FACE);
+					font.SetFamilyAndFace(family,_FaceFromUI());
 					i++;
 				}
 				font=_FindFontForFace(font,_FaceFromUI());
+				font.SetFace(face);
  			}
 			break;
 		case M_BOLD_CHANGED:
+				if (fUnderline->Value() != 0)
+					face = face | B_BOLD_FACE;
+				else
+					face = face & (~B_BOLD_FACE);
 				font=_FindFontForFace(font,_FaceFromUI());
 			break;
 		case M_ITALIC_CHANGED:
+				if (fUnderline->Value() != 0)
+					face = face | B_ITALIC_FACE;
+				else
+					face = face & (~B_ITALIC_FACE);
 				font=_FindFontForFace(font,_FaceFromUI());
 			break;
 		case M_STRIKE_OUT_CHANGED:
 				if (fUnderline->Value() != 0)
 					face = face | B_STRIKEOUT_FACE;
 				else
-					face = face & !B_STRIKEOUT_FACE;
+					face = face & (~B_STRIKEOUT_FACE);
 			break;
 		case M_UNDERLINE_CHANGED:
 				if (fUnderline->Value() != 0)
 					face = face | B_UNDERSCORE_FACE;
 				else
-					face = face & !B_UNDERSCORE_FACE;
+					face = face & (~B_UNDERSCORE_FACE);
 			break;
 		case M_FORE_GROUND_COLOR_CHANGED:
 		case M_FILL_COLOR_CHANGED:
@@ -221,7 +229,7 @@ FontView::MessageReceived(BMessage* message)
 			if (fOutline->Value() != 0)
 				face = face | B_OUTLINED_FACE;
 			else
-				face = face & !B_OUTLINED_FACE;
+				face = face & (~B_OUTLINED_FACE);
 			break;
 		case M_SHEAR_CHANGED:
 		case M_SPACING_CHANGED:
@@ -240,6 +248,8 @@ FontView::MessageReceived(BMessage* message)
 BFont
 FontView::_FindFontForFace(const BFont &font,uint16 face) const
 {
+	//** later maybe better implmeentation to calculate wich style
+	// is the closest to the selected one...
 	BFont newFont(font);
 	font_family family;
 	font_style style;
@@ -265,7 +275,7 @@ FontView::_FaceFromUI()
 		face = face | B_BOLD_FACE;
 	if (fItalic->Value() != 0)
 		face = face | B_ITALIC_FACE;
-	if (face == NULL)
+	if (face == 0)
 		face = B_REGULAR_FACE;
 	return face;
 	
