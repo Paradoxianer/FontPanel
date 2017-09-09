@@ -124,19 +124,18 @@ FontView::SetMessage(BMessage *message)
 void 
 FontView::SetFont(const BFont &font)
 {
-	BView::SetFont(&font,B_FONT_ALL);
+	ChangeFont(&font);
 
 	font_family family;
 	font_style	style;
 	uint16		face;
 	font.GetFamilyAndStyle(&family, &style);
 	face = font.Face();
-	//fFontListView->SelectFont(family);
-	/*fBold->SetValue(face & B_BOLD_FACE);
+	fFontListView->SelectFont(family);
+	fBold->SetValue(face & B_BOLD_FACE);
 	fItalic->SetValue(face & B_ITALIC_FACE);
 	fStrikeOut->SetValue(face & B_STRIKEOUT_FACE);
 	fUnderline->SetValue(face & B_UNDERSCORE_FACE);
-
 	//tab Font tab Color tab more (shear, rotation, spacing and so on)
 	/*
 		BPopUpMenu		*fForeGroundColor;
@@ -147,6 +146,12 @@ FontView::SetFont(const BFont &font)
 	fOutline->SetValue(int32(face & B_OUTLINED_FACE));
 	fShear->SetValue(font.Shear());
 	fSpacing->SetValue(font.Spacing());
+}
+
+void 
+FontView::ChangeFont(const BFont &font)
+{
+	BView::SetFont(&font,B_FONT_ALL);
 	fPreview->SetFont(&font);
 }
 
@@ -241,7 +246,7 @@ FontView::MessageReceived(BMessage* message)
 		}
 	}
 	//fPreview->SetFont(&font);
-	SetFont(font);
+	ChangeFont(font);
 }
 
 

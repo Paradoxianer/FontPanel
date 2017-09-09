@@ -35,6 +35,8 @@ class FontView : public BView{
 		void			SetMessage(BMessage *message);
 	
 		void			SetFont(const BFont &font);
+		void			ChangeFont(const BFont &font);
+
 		BFont*			Font(void) const;
 		status_t		SetFamilyAndStyle(const font_family family,
 							const font_style style);
