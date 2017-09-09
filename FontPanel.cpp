@@ -41,6 +41,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 				B_WILL_ACCEPT_FIRST_CLICK | B_NO_WORKSPACE_ACTIVATION,
 				B_CURRENT_WORKSPACE)
 {
+	defaultFont=*font;
 	fHidesWhenDone = hide_when_done;
 	fUpdateOnChange=update_on_change;
 	if (target)
@@ -84,7 +85,11 @@ FontPanel::~FontPanel(void)
 
 void FontPanel::SetFont(const BFont &font)
 {
-	//lock Window??
+}
+
+BFont* FontPanel::Font(void) const
+{
+	return fFontView->Font();
 }
 
 status_t FontPanel::SetFamilyAndStyle(const font_family family,
@@ -132,8 +137,7 @@ FontPanel::Show()
 void
 FontPanel::Hide()
 {
-	if (HidesWhenDone())
-		Quit();
+	BWindow::Hide();
 }
 
 
@@ -169,7 +173,7 @@ FontPanel::SetMessage(BMessage *message)
 void
 FontPanel::SetHideWhenDone(bool value)
 {
-//	fWindow->SetHideWhenDone(value);
+	//SetHideWhenDone(value);
 }
 
 
@@ -179,3 +183,44 @@ FontPanel::HidesWhenDone(void) const
 	return fHidesWhenDone;
 }
 
+
+void FontPanel::MessageReceived(BMessage* message)
+{
+	message->PrintToStream();
+	switch (message->what) {
+		
+		case M_OK:
+			{
+				BFont *returnFont = fFontView->Font();	
+				returnFont->PrintToStream();
+				Quit();
+			}
+			break;
+		case M_CANCEL:{
+				fFontView->SetFont(defaultFont);
+				Quit();
+			}
+			break;
+		default:  {
+			BWindow::MessageReceived(message);
+			break;
+		}
+	}
+	
+}
+
+
+
+int main() {
+	new BApplication("application/x-vnd.TestFontPanel");
+   /* Further initialization goes here -- read settings,
+      set globals, etc. */
+   FontPanel *fPanel = new FontPanel(FONT_PANEL,be_plain_font, new BString("Timon"),NULL,
+		NULL, false, true, true);
+	fPanel->SetHideWhenDone(false);
+	fPanel->Show();
+   be_app->Run();
+   /* Clean up -- write settings, etc. */
+	delete be_app;
+	return 0;
+}

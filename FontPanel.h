@@ -100,6 +100,7 @@ class FontPanel: public BWindow {
 		bool			HidesWhenDone(void) const;
 		void			Refresh();
 
+		void			MessageReceived(BMessage* message);
 	
 	private:
 		FontView		*fFontView;
@@ -111,6 +112,7 @@ class FontPanel: public BWindow {
 		BStatusBar		*fStatus;
 		BMessage		*fMessage;
 		BMessenger		fTarget;
+		BFont			defaultFont;
 		
 };
 
