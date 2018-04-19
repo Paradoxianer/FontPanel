@@ -2,6 +2,7 @@
 	FontPanel.cpp: A general-purpose font selection class
 	Written by DarkWyrm <darkwyrm@earthlink.net>, Copyright 2007
 	Released under the MIT license.
+	Edit by Paradoxon 2018
 */
 
 #include "FontPanel.h"
@@ -18,8 +19,8 @@
 #include <Invoker.h>
 #include <Message.h>
 #include <Messenger.h>
-#include <StatusBar.h>
 #include <String.h>
+#include <StringView.h>
 #include <Screen.h>
 #include <Window.h>
 #include <stdio.h>
@@ -56,8 +57,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 	fOKButton = new BButton("ok",B_TRANSLATE("OK"),new BMessage(M_OK));
 	fCancelButton = new BButton("cancel",B_TRANSLATE("Cancel"),new BMessage(M_CANCEL));
 	fDefaultButton = new BButton("default",B_TRANSLATE("Default"),new BMessage(M_CANCEL));
-	fStatus = new BStatusBar("statusbar",B_TRANSLATE("Type to filter"));
-	fStatus->SetBarHeight(12);
+	fStatus = new BStringView("statusbar",B_TRANSLATE("Type to filter"));
 
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
@@ -72,7 +72,7 @@ FontPanel::FontPanel(font_panel_mode mode,
 			.Add(fCancelButton)
 			.Add(fDefaultButton)
 		)
-//		.Add(fStatus,0.2)
+		.Add(fStatus,0.2)
  	);
  	fFontView->MakeFocus();
 }
@@ -129,8 +129,8 @@ FontPanel::Show()
 	//MoveTo(AlertPosition(frame));
 	if (!IsShowing())
 		BWindow::Show();
-
 	Activate();
+	ResizeToPreferred();
 }
 
 

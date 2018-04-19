@@ -14,7 +14,7 @@
 
 class BMessage;
 class BButton;
-class BStatusBar;
+class BStringView;
 class FontView;
 
 enum font_panel_mode {
@@ -109,7 +109,7 @@ class FontPanel: public BWindow {
 		BButton			*fDefaultButton;			
 		bool			fHidesWhenDone;
 		bool			fUpdateOnChange;
-		BStatusBar		*fStatus;
+		BStringView		*fStatus;
 		BMessage		*fMessage;
 		BMessenger		fTarget;
 		BFont			defaultFont;
