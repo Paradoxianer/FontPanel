@@ -28,8 +28,8 @@ FontView::FontView(font_panel_mode mode,
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
 		.Add(BGroupLayoutBuilder(B_HORIZONTAL)
-			//.Add(new BScrollView("fontListScroller",fFontListView,B_FOLLOW_ALL_SIDES, 0, false, true),100)
-			.Add(fFontListView,100)
+			.Add(new BScrollView("fontListScroller",fFontListView,B_FOLLOW_ALL_SIDES, 0, false, true),100)
+			//.Add(fFontListView,100)
 			)
 		.Add(BGridLayoutBuilder()
 			.Add(BSpaceLayoutItem::CreateGlue(),0,0)
@@ -63,6 +63,7 @@ void
 FontView::Init()
 {
 	fFontListView		= new FontListView();
+	fFontListView->SetResizingMode(B_FOLLOW_ALL_SIDES);
 	fBold				= new BCheckBox("Bold",B_TRANSLATE("Bold"),new BMessage(M_BOLD_CHANGED));
 	fItalic				= new BCheckBox("Italic",B_TRANSLATE("Italic"), new BMessage(M_ITALIC_CHANGED));
 		
@@ -245,7 +246,6 @@ FontView::MessageReceived(BMessage* message)
 			break;
 		}
 	}
-	//fPreview->SetFont(&font);
 	ChangeFont(font);
 }
 
