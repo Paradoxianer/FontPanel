@@ -72,8 +72,8 @@ public:
 			void			SetEncoding(uint8 encoding){font.SetEncoding(encoding);};
 			void			SetFace(uint16 face){font.SetFace(face);};
 			void			SetFlags(uint32 flags){font.SetFlags(flags);};
-
 			void			Update( BView *owner, const BFont *fFont);
+			
 
 private:
 		font_family	family;

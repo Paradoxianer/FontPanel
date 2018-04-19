@@ -48,11 +48,9 @@ FontListView::KeyDown(const char* bytes, int32 numBytes)
 			case B_ESCAPE:
 				filterString = "";
 				break;
-
 			case B_BACKSPACE:
 				filterString.Remove(filterString.CountChars()-1,1);
 				break;
-
 			case B_DELETE:
 			case B_INSERT:
 			case B_PAGE_UP:
@@ -66,7 +64,7 @@ FontListView::KeyDown(const char* bytes, int32 numBytes)
 				filterString+=bytes[0];
 				break;
 		};
-		//RescanForFonts();
+		RescanForFonts();
 }
 
 void
@@ -123,6 +121,13 @@ void
 FontListView::RescanForFonts(void)
 {	
 	//** find the item for the CurrentSelection();
+	int			curSel	= CurrentSelection();
+	FontItem	*tItem	= (FontItem*)ItemAt(curSel);
+	char		*family	= NULL;
+	int 		newSel	=0;
+	if (tItem!=NULL)
+		family	= tItem->GetFamily();
+	family = NULL;
 	
 	DeleteAll();
 	int32 numFamilies = count_font_families();
@@ -137,7 +142,10 @@ FontListView::RescanForFonts(void)
 	}
 	//try to find the correspondending item wich was selected bevor the resacn
 	//if not select the first item
-	Select(0);
+	//find for Font
+	if (family != NULL)
+		newSel=IndexOf(family);
+	Select(newSel);
 }
 
 void FontListView::SetFilter(char *newFilter)
@@ -149,6 +157,7 @@ void FontListView::SetFilter(char *newFilter)
 void
 FontListView::DeleteAll(void)
 {	
+	//**first delete all items
 	MakeEmpty();
 }
 
