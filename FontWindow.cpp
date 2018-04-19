@@ -18,7 +18,7 @@
 
 
 FontWindow::FontWindow(const BRect frame, float fontsize)
- :	BWindow(frame,B_TRANSLATE("Choose a Font"), B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL,0)
+ :	BWindow(frame,B_TRANSLATE("Choose a Font"), B_TITLED_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL | B_AUTO_UPDATE_SIZE_LIMITS,0)
 {	
 	RemoveShortcut('w',B_COMMAND_KEY);
 	AddShortcut('w',B_COMMAND_KEY,new BMessage(M_HIDE_WINDOW));
