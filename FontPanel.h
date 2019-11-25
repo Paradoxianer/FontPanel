@@ -23,10 +23,13 @@ enum font_panel_mode {
 	MAX_FONT_PANEL  //with spacing and so on
 };
 
-enum font_panel_button {
+const uint32	B_FONT_TYPE						= 'fOTy';
+
+
+/*enum font_panel_button  {
 	B_CANCEL_BUTTON,
 	B_DEFAULT_BUTTON
-};
+};*/
 
 enum font_panel_messages {
 	M_OK			= 'm_ok',
@@ -94,7 +97,7 @@ class FontPanel: public BWindow {
 		uint32			FontMask(void) const;
 		
 		
-		void			SetButtonLabel(font_panel_button button, const char* label);							
+		//void			SetButtonLabel(font_panel_button button, const char* label);							
 		
 		void			SetHideWhenDone(bool hideWhenDone);
 		bool			HidesWhenDone(void) const;
@@ -103,6 +106,8 @@ class FontPanel: public BWindow {
 		void			MessageReceived(BMessage* message);
 	
 	private:
+		BMessage		*MessageForFont(BFont *font);
+		
 		FontView		*fFontView;
 		BButton			*fOKButton;
 		BButton			*fCancelButton;

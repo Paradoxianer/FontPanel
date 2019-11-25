@@ -191,9 +191,9 @@ void FontPanel::MessageReceived(BMessage* message)
 		case M_OK:
 			{
 				BFont *returnFont = fFontView->Font();
-				BMessage *messageToSend= new BMessage(message);
-				messageToSend->AddMessage("font",MessageForFont(returnFont);
-				fTarget->SendMessage(messageToSend );
+				BMessage *messageToSend= new BMessage(*message);
+				messageToSend->AddMessage("font",MessageForFont(returnFont));
+				fTarget.SendMessage(messageToSend);
 				returnFont->PrintToStream();
 				Quit();
 			}
@@ -210,18 +210,22 @@ void FontPanel::MessageReceived(BMessage* message)
 	}
 }
 
-BMessage *MessageForFont(BFont *font){
-	BMessage *returnMessage = new Message(B_FONT_TYPE);
+BMessage*  FontPanel::MessageForFont(BFont *font){
+	BMessage *returnMessage = new BMessage(B_FONT_TYPE);
 	if (font != NULL){
+		font_family		family;
+		font_style		style;
+		font->GetFamilyAndStyle(&family,&style);
 		returnMessage->AddInt16("Font::Face",font->Face());
-		returnMessage->AddString("Font::Family", font->font_family);
+		returnMessage->AddString("Font::Family",(const char*)&family);
 		returnMessage->AddInt32("Font::Flags", font->Flags());
 		returnMessage->AddFloat("Font::Rotation", font->Rotation());
 		returnMessage->AddFloat("Font::Shear", font->Shear());
 		returnMessage->AddFloat("Font::Size", font->Size());	
 		returnMessage->AddInt8("Font::Spacing", font->Spacing());
-		returnMessage->AddString("Font::Style" , font->font_style); 
+		returnMessage->AddString("Font::Style",(const char*)&style); 
 	}
+	return returnMessage;
 }
 
 
