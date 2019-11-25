@@ -32,7 +32,8 @@ APP_MIME_SIG = application/x-vnd.libfontpanel
 SRCS =	FontListView.cpp \
 		FontPanel.cpp \
 		FontPreview.cpp \
-		FontView.cpp  
+		FontView.cpp \
+		TestFontPanel.cpp
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
