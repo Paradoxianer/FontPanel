@@ -186,12 +186,14 @@ FontPanel::HidesWhenDone(void) const
 
 void FontPanel::MessageReceived(BMessage* message)
 {
-	message->PrintToStream();
 	switch (message->what) {
 		
 		case M_OK:
 			{
-				BFont *returnFont = fFontView->Font();	
+				BFont *returnFont = fFontView->Font();
+				BMessage *messageToSend= new BMessage(message);
+				messageToSend->AddMessage("font",MessageForFont(returnFont);
+				fTarget->SendMessage(messageToSend );
 				returnFont->PrintToStream();
 				Quit();
 			}
@@ -206,21 +208,21 @@ void FontPanel::MessageReceived(BMessage* message)
 			break;
 		}
 	}
-	
+}
+
+BMessage *MessageForFont(BFont *font){
+	BMessage *returnMessage = new Message(B_FONT_TYPE);
+	if (font != NULL){
+		returnMessage->AddInt16("Font::Face",font->Face());
+		returnMessage->AddString("Font::Family", font->font_family);
+		returnMessage->AddInt32("Font::Flags", font->Flags());
+		returnMessage->AddFloat("Font::Rotation", font->Rotation());
+		returnMessage->AddFloat("Font::Shear", font->Shear());
+		returnMessage->AddFloat("Font::Size", font->Size());	
+		returnMessage->AddInt8("Font::Spacing", font->Spacing());
+		returnMessage->AddString("Font::Style" , font->font_style); 
+	}
 }
 
 
 
-int main() {
-	new BApplication("application/x-vnd.TestFontPanel");
-   /* Further initialization goes here -- read settings,
-      set globals, etc. */
-   FontPanel *fPanel = new FontPanel(FONT_PANEL,be_plain_font, new BString("Timon"),NULL,
-		NULL, false, true, true);
-	fPanel->SetHideWhenDone(false);
-	fPanel->Show();
-   be_app->Run();
-   /* Clean up -- write settings, etc. */
-	delete be_app;
-	return 0;
-}
