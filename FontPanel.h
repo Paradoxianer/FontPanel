@@ -23,8 +23,7 @@ enum font_panel_mode {
 	MAX_FONT_PANEL  //with spacing and so on
 };
 
-const uint32	B_FONT_TYPE						= 'fOTy';
-
+const uint32   B_FONT_TYPE                                             = 'fOTy';
 
 /*enum font_panel_button  {
 	B_CANCEL_BUTTON,
